@@ -10,6 +10,7 @@ from dataclasses import asdict
 
 from models import RaceResult
 from engine import NotificationEngine
+from tba_parser import parse_tba_csv
 
 
 def load_filter(filter_path: str) -> dict:
@@ -35,6 +36,16 @@ def run_batch(engine: NotificationEngine, results_path: str) -> None:
     for alert in alerts:
         print(alert)
         print()
+
+
+def run_tba(engine: NotificationEngine, csv_path: str) -> None:
+    results = parse_tba_csv(csv_path)
+    alerts = engine.process_batch(results)
+    for alert in alerts:
+        print(alert)
+        print()
+    if not alerts:
+        print("No matching winners found.")
 
 
 def run_watch(engine: NotificationEngine, results_path: str) -> None:
@@ -71,6 +82,7 @@ def main() -> None:
     )
     parser.add_argument("--filter", metavar="FILTER_JSON", help="Path to filter config JSON file")
     parser.add_argument("--input", metavar="RESULTS_JSON", help="Batch mode: path to results JSON file")
+    parser.add_argument("--tba", metavar="TBA_CSV", help="TBA export mode: path to TBA results CSV/TSV file")
     parser.add_argument("--watch", metavar="RESULTS_JSON", help="Watch mode: poll results JSON file every 2s")
 
     args = parser.parse_args()
@@ -82,7 +94,9 @@ def main() -> None:
     filter_config = load_filter(args.filter)
     engine = NotificationEngine(filter_config=filter_config)
 
-    if args.input:
+    if args.tba:
+        run_tba(engine, args.tba)
+    elif args.input:
         run_batch(engine, args.input)
     elif args.watch:
         try:

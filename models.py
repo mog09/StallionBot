@@ -5,10 +5,10 @@ from typing import Optional
 @dataclass
 class RaceResult:
     track: str
-    race_number: int
     horse: str
     sire: str
     result: str  # "1st" = winner
+    race_number: Optional[int] = None
     distance_m: Optional[int] = None
     race_name: Optional[str] = None
     age: Optional[int] = None

@@ -17,9 +17,14 @@ def _sex_abbrev(sex: str) -> str:
 def format_alert(result: RaceResult) -> str:
     """Format a winning RaceResult into a 1- or 2-line alert string."""
     # --- Line 1 ---
-    race_label = f"Race {result.race_number}"
-    if result.race_name:
+    if result.race_number is not None and result.race_name:
         race_label = f"Race {result.race_number} ({result.race_name})"
+    elif result.race_number is not None:
+        race_label = f"Race {result.race_number}"
+    elif result.race_name:
+        race_label = f"the {result.race_name}"
+    else:
+        race_label = "a race"
 
     if result.distance_m is not None:
         distance_str = f" over {result.distance_m:,}m"

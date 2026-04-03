@@ -273,3 +273,60 @@ def test_minimal_data_one_line():
     assert "Morphettville" in alert
     # No distance → no "over Xm"
     assert "over" not in alert
+
+
+# ---------------------------------------------------------------------------
+# Test 13: TBA parser — tab-separated CSV row produces correct RaceResult
+# ---------------------------------------------------------------------------
+
+def test_tba_parser_basic():
+    import tempfile, os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+    from tba_parser import parse_tba_csv
+
+    headers = "\t".join([
+        "Race ID", "Meet date", "Group", "State", "Club", "Venue",
+        "Current Race Name", "Sponsor", "Distance", "Prize", "Age Criteria",
+        "Sex", "Condition", "Registered Race Name", "Dead Heat",
+        "1st Place Name", "1st Place Born", "1st Place Colour",
+        "1st Place Country", "1st Place Sex", "1st Place Sire", "1st Place Dam",
+        "1st Place Dam Sire", "1st Place Breeder", "1st Place Breeder State",
+        "1st Place Trainer", "1st Place Jockey", "1st Place Owner",
+        "2nd Place Name", "2nd Place Born", "2nd Place Country", "2nd Place Sex",
+        "3rd Place Name", "3rd Place Born", "3rd Place Country", "3rd Place Sex",
+    ])
+    row = "\t".join([
+        "1", "15/03/2026", "G1", "VIC", "VRC", "Flemington",
+        "Australian Cup", "", "2000", "500000", "3+", "",
+        "Good", "Australian Cup", "",
+        "Starlight Express", "2022", "Bay",
+        "AUS", "C", "Too Darn Hot", "Star Queen",
+        "Danehill", "Coolmore", "VIC",
+        "Chris Waller", "J. McDonald", "Some Owner",
+        "Runner Two", "2022", "AUS", "F",
+        "Runner Three", "2021", "AUS", "G",
+    ])
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False, encoding="utf-8") as f:
+        f.write(headers + "\n")
+        f.write(row + "\n")
+        tmp_path = f.name
+
+    try:
+        results = parse_tba_csv(tmp_path)
+    finally:
+        os.unlink(tmp_path)
+
+    assert len(results) == 1
+    r = results[0]
+    assert r.horse == "Starlight Express"
+    assert r.sire == "Too Darn Hot"
+    assert r.track == "Flemington"
+    assert r.race_name == "Australian Cup"
+    assert r.distance_m == 2000
+    assert r.age == 4  # 2026 - 2022
+    assert r.sex == "Colt"
+    assert r.trainer == "Chris Waller"
+    assert r.race_class == "G1"
+    assert r.country == "AUS"
+    assert r.result == "1st"
