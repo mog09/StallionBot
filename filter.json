@@ -1,0 +1,22 @@
+{
+  "logic": "OR",
+  "filters": [
+    {"field": "sire", "op": "eq", "value": "Anamoe"},
+    {"field": "sire", "op": "eq", "value": "Astern"},
+    {"field": "sire", "op": "eq", "value": "Blue Point"},
+    {"field": "sire", "op": "eq", "value": "Bivouac"},
+    {"field": "sire", "op": "eq", "value": "Brazen Beau"},
+    {"field": "sire", "op": "eq", "value": "Cylinder"},
+    {"field": "sire", "op": "eq", "value": "Ghaiyyath"},
+    {"field": "sire", "op": "eq", "value": "Golden Mile"},
+    {"field": "sire", "op": "eq", "value": "Harry Angel"},
+    {"field": "sire", "op": "eq", "value": "Kermadec"},
+    {"field": "sire", "op": "eq", "value": "Microphone"},
+    {"field": "sire", "op": "eq", "value": "Native Trail"},
+    {"field": "sire", "op": "eq", "value": "Paulele"},
+    {"field": "sire", "op": "eq", "value": "Pinatubo"},
+    {"field": "sire", "op": "eq", "value": "Street Boss"},
+    {"field": "sire", "op": "eq", "value": "Triple Time"},
+    {"field": "sire", "op": "eq", "value": "Victor Ludorum"}
+  ]
+}
