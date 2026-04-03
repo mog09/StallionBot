@@ -6,8 +6,16 @@ FUZZY_THRESHOLD = 0.82
 
 
 def _strip_suffix(s: str) -> str:
-    """Remove parenthetical country/origin suffixes like (GB), (AUS)."""
-    return re.sub(r'\s*\([^)]+\)\s*$', '', s).strip()
+    """Remove parenthetical country suffixes and trailing years.
+
+    Handles formats like:
+      'Harry Angel (IRE) 2014'
+      'Too Darn Hot (GB)'
+      'ANAMOE (AUS) 2019'
+    """
+    s = re.sub(r'\s*\([^)]+\)\s*', ' ', s)  # strip (IRE), (AUS), etc.
+    s = re.sub(r'\s*\b\d{4}\b\s*$', '', s)  # strip trailing year
+    return s.strip()
 
 
 def fuzzy_match(a: str, b: str) -> bool:
