@@ -330,3 +330,55 @@ def test_tba_parser_basic():
     assert r.race_class == "G1"
     assert r.country == "AUS"
     assert r.result == "1st"
+
+
+# ---------------------------------------------------------------------------
+# Test 14: Racing API mapper — winner extracted and mapped correctly
+# ---------------------------------------------------------------------------
+
+def test_racing_api_mapper_winner():
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+    from racing_api import _map_runner
+
+    race = {
+        "course": "Ascot (GB)",
+        "race_name": "Queen Anne Stakes",
+        "dist_m": "1600",
+        "pattern": "Group 1",
+        "class": "",
+        "region": "GB",
+    }
+    runner = {
+        "horse": "Golden Mile (GB)",
+        "sire": "Frankel",
+        "position": "1",
+        "age": "4",
+        "sex": "C",
+        "trainer": "John Gosden",
+        "dam": "Some Dam",
+        "damsire": "Galileo",
+    }
+    result = _map_runner(runner, race)
+    assert result is not None
+    assert result.horse == "Golden Mile (GB)"
+    assert result.sire == "Frankel"
+    assert result.track == "Ascot"
+    assert result.race_name == "Queen Anne Stakes"
+    assert result.distance_m == 1600
+    assert result.race_class == "G1"
+    assert result.country == "GB"
+    assert result.age == 4
+    assert result.sex == "Colt"
+    assert result.trainer == "John Gosden"
+    assert result.result == "1st"
+
+
+def test_racing_api_mapper_non_winner():
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+    from racing_api import _map_runner
+
+    race = {"course": "Ascot (GB)", "race_name": "Test", "dist_m": "1200",
+            "pattern": "", "class": "", "region": "GB"}
+    runner = {"horse": "Runner", "sire": "Frankel", "position": "2",
+              "age": "3", "sex": "F", "trainer": "Someone"}
+    assert _map_runner(runner, race) is None
