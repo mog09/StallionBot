@@ -116,7 +116,8 @@ def main() -> None:
     parser.add_argument("--watch", metavar="RESULTS_JSON", help="Watch mode: poll results JSON file every 2s")
     parser.add_argument("--api-user", metavar="USERNAME", help="Racing API username/key")
     parser.add_argument("--api-pass", metavar="PASSWORD", help="Racing API password")
-    parser.add_argument("--api-date", metavar="YYYY-MM-DD", help="Fetch results for this date (default: today)")
+    parser.add_argument("--api-date", metavar="YYYY-MM-DD", help="Fetch results from this date (default: today)")
+    parser.add_argument("--api-end-date", metavar="YYYY-MM-DD", help="Fetch results up to this date (default: same as --api-date)")
     parser.add_argument("--api-watch", action="store_true", help="Poll Racing API continuously")
     parser.add_argument("--api-interval", metavar="SECONDS", type=int, default=60, help="Poll interval in seconds (default: 60)")
 
@@ -142,7 +143,8 @@ def main() -> None:
         else:
             from datetime import date as dt
             query_date = args.api_date or dt.today().isoformat()
-            run_api(engine, client, start_date=query_date, end_date=query_date)
+            end_date = args.api_end_date or query_date
+            run_api(engine, client, start_date=query_date, end_date=end_date)
     elif args.tba:
         run_tba(engine, args.tba)
     elif args.input:
